@@ -17,7 +17,7 @@ var app = express();
 
 // Set up mongoose connection
 var mongoose = require('mongoose');
-var dev_db_url = 'mongodb://cooluser:coolpassword@ds119748.mlab.com:19748/local_library';
+var dev_db_url = 'mongodb://localhost:27017/test';
 var mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
@@ -34,8 +34,8 @@ var MongoStore = require('connect-mongo')(session);
 
 // Configure the local strategy for use by Passport.
 passport.use(
-  new LocalStrategy(function(username, password, callback) {
-    User.findOne({ username: username }, function(err, user) {
+  new LocalStrategy(function (username, password, callback) {
+    User.findOne({ username: username }, function (err, user) {
       if (err) {
         return callback(err);
       }
@@ -51,12 +51,12 @@ passport.use(
 );
 
 // Configure Passport authenticated session persistence.
-passport.serializeUser(function(user, callback) {
+passport.serializeUser(function (user, callback) {
   callback(null, user._id);
 });
 
-passport.deserializeUser(function(id, callback) {
-  User.findById(id, function(err, user) {
+passport.deserializeUser(function (id, callback) {
+  User.findById(id, function (err, user) {
     if (err) {
       return callback(err);
     }
@@ -69,7 +69,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Uncomment after placing your favicon in /public
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -89,8 +89,8 @@ app.use(
     saveUninitialized: true,
     store: new MongoStore({
       url: mongoDB,
-      ttl: 7 * 24 * 60 * 60 // 7 days. 14 Default.
-    })
+      ttl: 7 * 24 * 60 * 60, // 7 days. 14 Default.
+    }),
     // cookie: { secure: true }
   })
 );
@@ -101,7 +101,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Pass isAuthenticated and current_user to all views.
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.locals.isAuthenticated = req.isAuthenticated();
   // Delete salt and hash fields from req.user object before passing it.
   var safeUser = req.user;
@@ -121,14 +121,14 @@ app.use('/users', users);
 app.use('/catalog', catalog); // Add catalog routes to middleware chain.
 
 // Catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
 // Error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // Set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

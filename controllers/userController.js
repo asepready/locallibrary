@@ -10,7 +10,7 @@ var User = require('../models/user');
 exports.user_profile = [
   isPageOwnedByUser,
 
-  function(req, res, next) {
+  function (req, res, next) {
     User.findById(req.params.id).exec((err, found_user) => {
       if (err) {
         return next(err);
@@ -21,36 +21,36 @@ exports.user_profile = [
         return next(err);
       }
       // Successful, so render
-      res.render('user_profile', {
+      res.render('auth/profile', {
         title: 'User Profile',
-        user: found_user
+        user: found_user,
       });
     });
-  }
+  },
 ];
 
 // Display login form on GET.
 exports.login_get = [
   isAlreadyLoggedIn,
 
-  function(req, res, next) {
+  function (req, res, next) {
     var messages = extractFlashMessages(req);
-    res.render('user_login', {
+    res.render('auth/login', {
       title: 'Login',
-      errors: messages.length > 0 ? messages : null
+      errors: messages.length > 0 ? messages : null,
     });
-  }
+  },
 ];
 
 // Display warning page on GET.
 exports.warning = [
-  function(req, res, next) {
+  function (req, res, next) {
     var messages = extractFlashMessages(req);
-    res.render('user_warning', {
+    res.render('auth/warning', {
       title: 'Sorry!',
-      errors: messages.length > 0 ? messages : null
+      errors: messages.length > 0 ? messages : null,
     });
-  }
+  },
 ];
 
 // Handle login form on POST
@@ -58,18 +58,18 @@ exports.login_post = [
   passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/users/login',
-    failureFlash: true
-  })
+    failureFlash: true,
+  }),
 ];
 
 // Handle logout on GET.
 exports.logout_get = [
-  function(req, res, next) {
+  function (req, res, next) {
     req.logout();
-    req.session.destroy(err => {
+    req.session.destroy((err) => {
       res.redirect('/');
     });
-  }
+  },
 ];
 
 // Display register form on GET.
@@ -77,11 +77,11 @@ exports.register_get = [
   isAlreadyLoggedIn,
 
   // Continue processing.
-  function(req, res, next) {
-    res.render('user_form', {
-      title: 'Create User'
+  function (req, res, next) {
+    res.render('auth/form', {
+      title: 'Create User',
     });
-  }
+  },
 ];
 
 // Handle register on POST.
@@ -122,10 +122,10 @@ exports.register_post = [
 
     if (errorsArray.length > 0) {
       // There are errors. Render the form again with sanitized values/error messages.
-      res.render('user_form', {
+      res.render('auth/form', {
         title: 'Create User',
         user: user,
-        errors: errorsArray
+        errors: errorsArray,
       });
       return;
     } else {
@@ -141,14 +141,14 @@ exports.register_post = [
         }
         if (found_user) {
           // Username exists, re-render the form with error message.
-          res.render('user_form', {
+          res.render('auth/form', {
             title: 'Create User',
             user: user,
-            errors: [{ msg: 'Username already taken. Choose another one.' }]
+            errors: [{ msg: 'Username already taken. Choose another one.' }],
           });
         } else {
           // User does not exist. Create it.
-          user.save(err => {
+          user.save((err) => {
             if (err) {
               return next(err);
             }
@@ -159,14 +159,14 @@ exports.register_post = [
         }
       });
     }
-  }
+  },
 ];
 
 // Display update form on GET.
 exports.update_get = [
   isPageOwnedByUser,
 
-  function(req, res, next) {
+  function (req, res, next) {
     User.findById(req.params.id).exec((err, found_user) => {
       if (err) {
         return next(err);
@@ -177,13 +177,13 @@ exports.update_get = [
         return next(err);
       }
       // Successful, so render
-      res.render('user_form', {
+      res.render('auth/form', {
         title: 'Update User',
         user: found_user,
-        is_update_form: true
+        is_update_form: true,
       });
     });
-  }
+  },
 ];
 
 // Handle update on POST.
@@ -213,7 +213,7 @@ exports.update_post = [
       fullname: req.body.fullname,
       email: req.body.email,
       role: Number.parseInt(req.body.role),
-      _id: req.params.id
+      _id: req.params.id,
     });
 
     // Update password only if the user filled both password fields!
@@ -233,7 +233,7 @@ exports.update_post = [
 
       // Remove warnings that may be coming from the body(..) validation step above.
       var filteredErrorsArray = [];
-      errorsArray.forEach(errorObj => {
+      errorsArray.forEach((errorObj) => {
         if (!(errorObj.param == 'password' || errorObj.param == 'password_confirm')) {
           filteredErrorsArray.push(errorObj);
         }
@@ -244,16 +244,16 @@ exports.update_post = [
 
     if (errorsArray.length > 0) {
       // There are errors. Render the form again with sanitized values/error messages.
-      res.render('user_form', {
+      res.render('auth/form', {
         title: 'Update User',
         user: user,
         errors: errorsArray,
-        is_update_form: true
+        is_update_form: true,
       });
       return;
     } else {
       // Data from form is valid. Update the record.
-      User.findByIdAndUpdate(req.params.id, user, {}, function(err, theuser) {
+      User.findByIdAndUpdate(req.params.id, user, {}, function (err, theuser) {
         if (err) {
           return next(err);
         }
@@ -261,19 +261,19 @@ exports.update_post = [
         res.redirect(theuser.url);
       });
     }
-  }
+  },
 ];
 
 // Display reset password form on GET.
 exports.reset_get = [
   isAlreadyLoggedIn,
 
-  function(req, res, next) {
-    res.render('user_reset', {
+  function (req, res, next) {
+    res.render('auth/reset', {
       title: 'Reset Password',
-      is_first_step: true
+      is_first_step: true,
     });
-  }
+  },
 ];
 
 // Handle reset password on POST (1st step).
@@ -299,17 +299,17 @@ exports.reset_post = [
     // Create a user object with escaped and trimmed data.
     var user = new User({
       username: req.body.username,
-      email: req.body.email
+      email: req.body.email,
     });
 
     if (errorsArray.length > 0) {
       // There are errors. Render the form again with sanitized values/error messages.
       // The user couldn't pass this step yet. Hence we're still in the first step!
-      res.render('user_reset', {
+      res.render('auth/reset', {
         title: 'Reset Password',
         is_first_step: true,
         user: user, // Pass user object created with user-entered values.
-        errors: errorsArray
+        errors: errorsArray,
       });
       return;
     } else {
@@ -323,24 +323,24 @@ exports.reset_post = [
         if (found_user) {
           // User exists and credentials did match. Proceed to the second step.
           // And pass found_user to the form. We'll need user._id in the final step.
-          res.render('user_reset', {
+          res.render('auth/reset', {
             title: 'Reset Password',
             is_second_step: true,
-            user: found_user // Pass found_user.
+            user: found_user, // Pass found_user.
           });
         } else {
           // User does not exist or credentials didn't match.
           // Render the form again with error messages. Still first step!
-          res.render('user_reset', {
+          res.render('auth/reset', {
             title: 'Reset Password',
             is_first_step: true,
             user: user, // Pass user object created with user-entered values.
-            errors: [{ msg: 'The user does not exist or credentials did not match a user. Try again.' }]
+            errors: [{ msg: 'The user does not exist or credentials did not match a user. Try again.' }],
           });
         }
       });
     }
-  }
+  },
 ];
 
 // Handle reset password on POST (2nd step).
@@ -366,7 +366,7 @@ exports.reset_post_final = [
     // Create a user object containing only id field, for now.
     // We need to use old _id, which is coming from found_user passed in the first step.
     var user = new User({
-      _id: req.body.userid
+      _id: req.body.userid,
     });
 
     // -- Custom Validation -- //
@@ -379,11 +379,11 @@ exports.reset_post_final = [
 
     if (errorsArray.length > 0) {
       // There are errors. Render the form again with sanitized values/error messages.
-      res.render('user_reset', {
+      res.render('auth/reset', {
         title: 'Reset Password',
         is_second_step: true,
         user: user, // We need to pass user back to form because we will need user._id in the next step.
-        errors: errorsArray
+        errors: errorsArray,
       });
       return;
     } else {
@@ -393,27 +393,28 @@ exports.reset_post_final = [
       user.setPassword(req.body.password);
 
       // Update the record.
-      async.waterfall([
-        function(callback) {
-          User.findById(req.body.userid).exec(callback);
-        },
-        function(found_user, callback) {
-          // This step is required to keep user role unchanged.
-          user.role = found_user.role;
-          User.findByIdAndUpdate(req.body.userid, user, {}).exec(callback);
-        }
-      ], 
-        function(err, theuser) {
+      async.waterfall(
+        [
+          function (callback) {
+            User.findById(req.body.userid).exec(callback);
+          },
+          function (found_user, callback) {
+            // This step is required to keep user role unchanged.
+            user.role = found_user.role;
+            User.findByIdAndUpdate(req.body.userid, user, {}).exec(callback);
+          },
+        ],
+        function (err, theuser) {
           if (err) {
             return next(err);
           }
           // Success, redirect to login page and show a flash message.
           req.flash('success', 'You have successfully changed your password. You can log in now!');
           res.redirect('/users/login');
-        });
-      
+        }
+      );
     }
-  }
+  },
 ];
 
 // -- Helper functions, no need to export. -- //
@@ -430,7 +431,7 @@ function extractFlashMessages(req) {
 
   // Look for success flash.
   if (successFlash && successFlash.length) messages.push({ msg: successFlash[0] });
-  
+
   return messages;
 }
 
