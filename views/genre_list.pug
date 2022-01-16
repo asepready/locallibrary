@@ -1,12 +1,14 @@
 extends layout
 
 block content
-  h1= title
+  main.col-md-9.ms-sm-auto.col-lg-10.px-md-4 
+    .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
+      h1= title
   
-  ul
-  each val in list_genres
-    li 
-      a(href=val.url) #{val.name}
+    ul
+    each val in list_genres
+      li 
+        a(href=val.url) #{val.name}
 
-  else
-    li There are no genre.
+    else
+      li There are no genre.

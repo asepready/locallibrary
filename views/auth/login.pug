@@ -1,15 +1,15 @@
-extends ../layout
+extends layout
 
 block content
   h1= title
 
   form(method='POST' action='')
-    div.form-group
+    div.form-floating
+      input#username.form-control(type='text', placeholder='johndoe', name='username', required value=(undefined===user ? '' : user.username))
       label(for='username') Username:
-      input#username.form-control(type='text' placeholder='johndoe' name='username' required value=(undefined===user ? '' : user.username))
-    div.form-group
+    div.form-floating
+      input#password.form-control(type='password', placeholder="Password", name='password')
       label(for='password') Password:
-      input#password.form-control(type='password' name='password' required)
     button.btn.btn-primary(type='submit') Submit
 
   br

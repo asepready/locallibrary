@@ -1,29 +1,65 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #[em LocalLibrary], a very basic Express website developed as a tutorial example on the Mozilla Developer Network.
+  main.col-md-9.ms-sm-auto.col-lg-10.px-md-4 
+    .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
+      .h2= title
+      .btn-toolbar.mb-2.mb-md-0
+        .btn-group.me-2
+          button.btn.btn-sm.btn-outline-secondary(type="button") Share 
+          button.btn.btn-sm.btn-outline-secondary(type="button") Export 
+        button.btn.btn-sm.btn-outline-secondary.dropdown-toggle(type="button")
+          span(data-feather="calendar")
+          | This week
 
+    p Welcome to #[em LocalLibrary], a very basic Express website developed as a tutorial example on the Mozilla Developer Network.
+    .h1 Statistics
+    if error
+      p Error getting dynamic content.
+    else
+      p The library has the following record counts:
+      .row
+        .col-sm-2
+          .card.text-white.bg-primary.mb-2
+            .card-header 
+              a(href='/catalog/books').btn.btn-primary #[strong Click ]
+            .card-body
+              .card-title Books
+              .card-text : 
+                .badge.badge-light !{data.book_count}
 
-  h1 Statistics
+        .col-sm-2
+          .card.text-white.bg-info.mb-3
+            .card-header 
+              a(href='/catalog/bookinstances').btn.btn-info #[strong Click ]
+            .card-body
+              .card-title Copies
+              .card-text :
+                .badge.badge-light !{data.book_instance_count}
 
-  if error
-    p Error getting dynamic content.
-  else
-    p The library has the following record counts:
+        .col-sm-2
+          .card.text-white.bg-success.mb-3
+            .card-header 
+              a(href='/catalog/bookinstances').btn.btn-success #[strong Click ]
+            .card-body
+              .card-title Copies available
+              .card-text :
+                .badge.badge-light !{data.book_instance_available_count} 
 
-    p
-      a(href='/catalog/books').btn.btn-primary #[strong Books ]
-        span.badge.badge-light !{data.book_count}
-    p
-      a(href='/catalog/bookinstances').btn.btn-info #[strong Copies ]
-        span.badge.badge-light !{data.book_instance_count}
-    p
-      a(href='/catalog/bookinstances').btn.btn-success #[strong Copies available ]
-        span.badge.badge-light !{data.book_instance_available_count} 
-    p
-      a(href='/catalog/authors').btn.btn-danger #[strong Authors ]
-        span.badge.badge-light !{data.author_count}
-    p
-      a(href='/catalog/genres').btn.btn-warning #[strong Genres ]
-        span.badge.badge-light !{data.genre_count}
+        .col-sm-2
+          .card.text-white.bg-danger.mb-3
+            .card-header
+              a(href='/catalog/authors').btn.btn-danger #[strong Click ]
+            .card-body
+              .card-title Authors
+              .card-text :
+                .badge.badge-light !{data.author_count}
+
+        .col-sm-2
+          .card.text-white.bg-warning.mb-3
+            .card-header 
+              a(href='/catalog/genres').btn.btn-warning #[strong Click ]
+            .card-body
+              .card-title Genres
+              .card-text :
+                .badge.badge-light !{data.genre_count}
