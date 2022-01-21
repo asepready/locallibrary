@@ -1,23 +1,29 @@
 extends layout
 
 block content
-  h1= title
+  .body.text-center
+    main.form-signin
+      h1= title
 
-  form(method='POST' action='')
-    div.form-floating
-      input#username.form-control(type='text', placeholder='johndoe', name='username', required value=(undefined===user ? '' : user.username))
-      label(for='username') Username:
-    div.form-floating
-      input#password.form-control(type='password', placeholder="Password", name='password')
-      label(for='password') Password:
-    button.btn.btn-primary(type='submit') Submit
+      form(method='POST' action='')
+        div.form-floating
+          input#username.form-control(type='text', placeholder='johndoe', name='username', required value=(undefined===user ? '' : user.username))
+          label(for='username') Username:
+        div.form-floating
+          input#password.form-control(type='password', placeholder="Password", name='password')
+          label(for='password') Password:
+        button.btn.btn-primary(type='submit') Submit
 
-  br
-  a(href='/users/reset') Forgot your password?
-  br
-  
-  br
-  if errors
-    ul
-      for error in errors
-        li!= error.msg
+      br
+      a(href='/users/reset') Forgot your password?
+      br
+      | or
+
+      br
+      a.btn(href='/users/register') Register
+      br  
+      br
+      if errors
+        ul
+          for error in errors
+            li!= error.msg
